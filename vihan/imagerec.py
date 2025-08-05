@@ -18,7 +18,7 @@ def load_datasets(data_dir: str, img_size: tuple = IMG_SIZE, batch_size: int = B
 
     train_ds = tf.keras.utils.image_dataset_from_directory(
         data_dir,
-        validation_split=0.2,
+        validation_split=0.8,
         subset="training",
         seed=seed,
         image_size=img_size,
