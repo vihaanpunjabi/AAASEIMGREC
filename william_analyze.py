@@ -75,6 +75,8 @@ class HazardousComponents(BaseModel):
     has_capacitors: bool = Field(description="Contains capacitors that may hold charge")
     has_toner: bool = Field(description="Contains toner/ink (printers)")
     has_refrigerant: bool = Field(description="Contains refrigerant gases")
+    has_cadmium: bool = Field(description="Contains cadmium")
+    has_nickel: bool = Field(description="Contains nickel")
 
 class EWasteAnalysis(BaseModel):
     # Basic Classification
@@ -114,10 +116,12 @@ def create_analysis_schema():
                     "has_lead": {"type": "boolean"},
                     "has_capacitors": {"type": "boolean"},
                     "has_toner": {"type": "boolean"},
-                    "has_refrigerant": {"type": "boolean"}
+                    "has_refrigerant": {"type": "boolean"},
+                    "has_cadmium": {"type": "boolean"},
+                    "has_nickel": {"type": "boolean"}
                 },
                 "required": ["has_battery", "has_mercury", "has_lead", "has_capacitors", 
-                           "has_toner", "has_refrigerant"]
+                           "has_toner", "has_refrigerant", "has_cadmium", "has_nickel"]
             },
             "observations": {
                 "type": "string",
@@ -163,12 +167,12 @@ def analyze_ewaste(image_file, additional_context=""):
         print(f"Error analyzing image: {e}")
         raise
 
-def generate_processing_report(analysis: EWasteAnalysis) -> str:
+def generate_processing_report(image_path, analysis: EWasteAnalysis) -> str:
     """Generate a human-readable processing report"""
     report = f"""
     ====================================================================
 
-        ITEM """ + str(num) + f""":
+        ITEM """ + str(num) + f""": (""" + str(image_path) + f""")
 
         Item: {analysis.object_type} """
     if analysis.object_type == ObjectCategory.UNKNOWN:
@@ -183,7 +187,11 @@ def generate_processing_report(analysis: EWasteAnalysis) -> str:
         Battery: {'YES' if analysis.hazardous_components.has_battery else 'NO'}
         Mercury: {'YES' if analysis.hazardous_components.has_mercury else 'NO'}
         Lead: {'YES' if analysis.hazardous_components.has_lead else 'NO'}
-        Capacitors: {'YES' if analysis.hazardous_components.has_capacitors else 'NO'}"""
+        Capacitors: {'YES' if analysis.hazardous_components.has_capacitors else 'NO'}
+        Toner: {'YES' if analysis.hazardous_components.has_toner else 'NO'}
+        Refrigerant: {'YES' if analysis.hazardous_components.has_refrigerant else 'NO'}
+        Cadmium: {'YES' if analysis.hazardous_components.has_cadmium else 'NO'}
+        Nickel: {'YES' if analysis.hazardous_components.has_nickel else 'NO'}"""
     report += "\n\n    ===================================================================="
     
     return report
@@ -194,14 +202,13 @@ folder_path = "/Users/williambeesley/Desktop/AAASEIMGREC/images"
 images = os.listdir(folder_path)
 num = 0
 for image_path in images:
-    image_path = "images/" + image_path
     num += 1
     if __name__ == "__main__":
         try:
-            analysis = analyze_ewaste(image_path)
+            analysis = analyze_ewaste(str("images/" + image_path))
             
             # Generate and print report
-            report = generate_processing_report(analysis)
+            report = generate_processing_report(image_path, analysis)
             print(report)
 
         except Exception as e:
