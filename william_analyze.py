@@ -112,7 +112,7 @@ def create_analysis_schema():
                     "has_refrigerant": {"type": "boolean"}
                 },
                 "required": ["has_battery", "has_mercury", "has_lead", "has_capacitors", 
-                           "has_toner", "has_refrigerant", "has_data_storage"]
+                           "has_toner", "has_refrigerant"]
             },
         },
         "required": ["object_type", "shred_safety", "hazardous_components"]
