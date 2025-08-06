@@ -57,6 +57,7 @@ class ObjectCategory(str, Enum):
     MICROWAVE = "Microwave"
     
     # Other
+    CRT = "Cathode-Ray Tube"
     MIXED_EWASTE = "Mixed E-waste"
     UNKNOWN = "Unknown Device"
 
@@ -64,6 +65,7 @@ class ShredSafety(str, Enum):
     SAFE_TO_SHRED = "Safe to Shred"
     DO_NOT_SHRED = "Do Not Shred"
     REQUIRES_PREPROCESSING = "Requires Preprocessing Before Shredding"
+    DISCARD = "Discard"
 
 # ============= PYDANTIC MODELS =============
 class HazardousComponents(BaseModel):
@@ -83,6 +85,9 @@ class EWasteAnalysis(BaseModel):
     
     # Component Analysis
     hazardous_components: HazardousComponents
+
+    #observations just in case the object is not ewaste
+    observations: str = Field(description="Any additional relevant observations")
 
 
 # ============= ANALYSIS FUNCTIONS =============
@@ -114,8 +119,12 @@ def create_analysis_schema():
                 "required": ["has_battery", "has_mercury", "has_lead", "has_capacitors", 
                            "has_toner", "has_refrigerant"]
             },
+            "observations": {
+                "type": "string",
+                "description": "Additional observations"
+            },
         },
-        "required": ["object_type", "shred_safety", "hazardous_components"]
+        "required": ["object_type", "shred_safety", "hazardous_components", "observations"]
     }
 
 def analyze_ewaste(image_file, additional_context=""):
@@ -161,19 +170,21 @@ def generate_processing_report(analysis: EWasteAnalysis) -> str:
 
         ITEM """ + str(num) + f""":
 
-        Item: {analysis.object_type}
+        Item: {analysis.object_type} """
+    if analysis.object_type == ObjectCategory.UNKNOWN:
+        report += "\n        " + analysis.observations
+    report += f"""
         Shred Safety: {analysis.shred_safety}
     """
-    if analysis.shred_safety != ShredSafety.SAFE_TO_SHRED:
+    if analysis.shred_safety == ShredSafety.DO_NOT_SHRED or analysis.shred_safety == ShredSafety.REQUIRES_PREPROCESSING:
         report += f"""
         Hazards:
 
         Battery: {'YES' if analysis.hazardous_components.has_battery else 'NO'}
         Mercury: {'YES' if analysis.hazardous_components.has_mercury else 'NO'}
         Lead: {'YES' if analysis.hazardous_components.has_lead else 'NO'}
-        Capacitors: {'YES' if analysis.hazardous_components.has_capacitors else 'NO'}
-
-    ===================================================================="""
+        Capacitors: {'YES' if analysis.hazardous_components.has_capacitors else 'NO'}"""
+    report += "\n\n    ===================================================================="
     
     return report
 
@@ -183,7 +194,6 @@ folder_path = "/Users/williambeesley/Desktop/AAASEIMGREC/images"
 images = os.listdir(folder_path)
 num = 0
 for image_path in images:
-    print(image_path)
     image_path = "images/" + image_path
     num += 1
     if __name__ == "__main__":
