@@ -23,6 +23,8 @@ class ObjectCategory(str, Enum):
     SMARTWATCH = "Smartwatch"
     EARBUDS = "Earbuds/Headphones"
     CAMERA = "Digital Camera"
+    APPLIANCE = "Household Appliance"
+    CONSTRUCTION = "Construction/Gardening Tools"
     
     # Computer Components
     CIRCUIT_BOARD = "Circuit Board"
@@ -55,6 +57,7 @@ class ObjectCategory(str, Enum):
     ROUTER = "Router/Modem"
     SPEAKER = "Speaker System"
     MICROWAVE = "Microwave"
+    MEDICAL = "Medical Equipment"
     
     # Other
     CRT = "Cathode-Ray Tube"
@@ -147,7 +150,7 @@ def analyze_ewaste(image_file, additional_context=""):
         prompt = f.read()
 
     try:
-        model = genai.GenerativeModel('gemini-2.0-flash')
+        model = genai.GenerativeModel('gemini-2.5-pro')
         image = genai.upload_file(image_file)
         
         response = model.generate_content(
