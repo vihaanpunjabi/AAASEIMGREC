@@ -1,0 +1,15 @@
+E-WASTE ANALYSIS RESULTS
+Date: 2025-08-06 23:26:03
+==================================================
+
+Item #1: orange.jpg
+  Type: Orange
+  Safety: Not E-Waste
+  Notes: This is not electronic waste.
+
+Item #2: broken_laptop.jpeg
+  Type: Laptop
+  Safety: Needs Work
+  Dangers: LCD screen, Battery
+  Notes: The LCD screen contains toxic chemicals and the battery can explode if punctured or crushed. Handle with care.
+
