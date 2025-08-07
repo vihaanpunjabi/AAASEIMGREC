@@ -1,1 +1,0 @@
-Analyze this image and provide a descriptive label.
