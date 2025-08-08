@@ -57,6 +57,9 @@ genai.configure(api_key=API_KEY)
 # What types of image files we can analyze
 ALLOWED_IMAGE_TYPES = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp']
 
+# Rate limiting settings (requests per minute)
+RATE_LIMIT_DELAY = 2.0  # Seconds between requests (30 requests per minute)
+
 
 
 class SimpleEWasteAnalyzer:
@@ -268,9 +271,9 @@ def analyze_folder(folder_path: str = "images/"):
         # Print the result right away
         print_single_result(result)
         
-        # Small pause to avoid hitting API limits
+        # Rate limiting - pause between API calls
         if index < len(image_files):
-            time.sleep(0.5)
+            time.sleep(RATE_LIMIT_DELAY)
     
     # Calculate total time
     processing_time = time.time() - start_time
