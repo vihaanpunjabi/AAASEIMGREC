@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python3
 """
 ================================================================================
@@ -56,9 +57,7 @@ genai.configure(api_key=API_KEY)
 # What types of image files we can analyze
 ALLOWED_IMAGE_TYPES = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp']
 
-# ============================================================================
-# MAIN ANALYZER CLASS - This does the actual work
-# ============================================================================
+
 
 class SimpleEWasteAnalyzer:
     """
@@ -73,24 +72,8 @@ class SimpleEWasteAnalyzer:
         self.ai_model = genai.GenerativeModel('gemini-2.0-flash-exp')
         
         # Instructions we give to the AI about what to look for
-        self.instructions = """
-        Look at this image of electronic waste and tell me:
-        
-        1. What is this item? (be specific)
-        2. Is it safe to shred? Choose one:
-           - "Safe to Shred" = Can be shredded right away
-           - "Requires Preprocessing" = Remove dangerous parts first
-           - "Do Not Shred" = Never shred this
-           - "Discard" = This isn't electronic waste
-        3. What dangerous parts does it have? (like batteries, screens, etc.)
-        4. Any special notes or warnings?
-        
-        Remember:
-        - Batteries can explode (except tiny CMOS batteries in computers)
-        - LCD/Plasma screens have toxic chemicals
-        - Large capacitors can shock you
-        - Some things have mercury or lead
-        """
+        with open("prompt.md", 'r') as f:
+            self.instructions = f.read()
         
         # This tells the AI exactly what format we want the answer in
         self.response_format = {
@@ -143,7 +126,6 @@ class SimpleEWasteAnalyzer:
         
         try:
             # Step 1: Upload the image to Google
-            print(f"Processing image {item_num}/{total}: {image_path.name}")
             uploaded_image = genai.upload_file(str(image_path))
             
             # Step 2: Ask the AI to analyze it
