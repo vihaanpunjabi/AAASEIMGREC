@@ -3,7 +3,7 @@
 import sys
 from pathlib import Path
 from phone_coms import take_photo_from_front_camera
-from final_analyze import SimpleEWasteAnalyzer
+from analyzer import SimpleEWasteAnalyzer
 
 
 def main():
