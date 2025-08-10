@@ -3,11 +3,13 @@
 import cv2
 import os
 from datetime import datetime
+from .camera_utils import find_available_camera
 
 
 def take_photo_from_front_camera(save_path=None):
     """
     Takes a single photo from the front camera and saves it.
+    Auto-detects available camera if default camera fails.
     
     Args:
         save_path: Optional custom path to save the photo. 
@@ -21,12 +23,17 @@ def take_photo_from_front_camera(save_path=None):
     if not os.path.exists(photos_dir):
         os.makedirs(photos_dir)
     
-    # Open front camera (index 0)
+    # Try to open camera with auto-detection
     cap = cv2.VideoCapture(0)
     
     if not cap.isOpened():
-        print("Error: Cannot access front camera. Check camera permissions.")
-        return None
+        print("Default camera not available, auto-detecting...")
+        camera_index = find_available_camera()
+        if camera_index is None:
+            print("Error: No camera found. Check camera connections.")
+            return None
+        print(f"Found camera at index {camera_index}")
+        cap = cv2.VideoCapture(camera_index)
     
     # Set camera properties for better quality
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)

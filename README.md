@@ -1,36 +1,46 @@
-# Image Recognition
+# E-Waste Sorting System
 
-Analyze images using Google's Gemini API.
+Automated e-waste detection and sorting using computer vision and Arduino servos.
 
-## Setup
 
-1. Clone repo
-2. Create virtual environment: `python3 -m venv venv`
-3. Activate: `source venv/bin/activate`
-4. Install: `pip install -r requirements.txt`
-5. Copy `.env.example` to `.env` and add your Google API key
-
-## Usage
-
-```python
-from sample import analyze_image
-
-# Basic usage
-result = analyze_image("image.jpg", "Describe this image")
-print(result)
-
-# With structured output
-from pydantic import BaseModel
-
-class ImageAnalysis(BaseModel):
-    label: str
-
-result = analyze_image("image.jpg", "What is this?", ImageAnalysis)
-print(result)
+### Install Dependencies
+```bash
+source venv/bin/activate
+pip install -r requirements.txt
 ```
 
-## Files
+### Upload Arduino Code
+Upload `arduino/simple_arduino_servo.ino` to your Arduino
 
-- `sample.py` - Main function
-- `prompts/prompt.md` - Default prompt
-- `requirements.txt` - Dependencies
+## 📁 Main Scripts
+
+### 1. `main.py` - Manual Capture & Sort
+Take photos manually and sort items
+```bash
+python main.py
+```
+
+### 2. `auto_detect_sort.py` - Automatic Detection & Sort
+Automatically detects objects and sorts them
+```bash
+python auto_detect_sort.py
+```
+
+### 3. `move_left.py` - Test Left Motor
+Move left servo (safe bin)
+```bash
+python move_left.py
+```
+
+### 4. `move_right.py` - Test Right Motor
+Move right servo (unsafe bin)
+```bash
+python move_right.py
+```
+
+| Level | Action |
+|-------|--------|
+| Safe to Shred | Sort LEFT |
+| Requires Preprocessing | Sort RIGHT |
+| Do Not Shred | Sort RIGHT |
+| Discard | Sort RIGHT |
