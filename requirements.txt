@@ -1,4 +1,19 @@
+# E-Waste Analyzer Dependencies
+
+# Google AI for image analysis
 google-generativeai>=0.3.0
-pydantic>=2.0.0
+
+# Computer vision for camera and object detection
+opencv-python>=4.12.0
+
+# Numerical computing for image processing
+numpy>=2.2.0
+
+# Environment variables for API keys
 python-dotenv>=1.0.0
+
+# Data validation
+pydantic>=2.0.0
+
+# Image processing
 Pillow>=10.0.0
